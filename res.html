@@ -1,0 +1,2621 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bistro OS — Restaurant Management Design Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      :root {
+        --bg: #f6f4f1;
+        --surface: #ffffff;
+        --sidebar: #ffffff;
+        --primary: #ff6f47;
+        --primary-dark: #e1552f;
+        --primary-light: #ffe7de;
+        --text: #20242c;
+        --text-muted: #858b96;
+        --border: #ece9e4;
+        --success: #1fa971;
+        --success-bg: #e5f6ee;
+        --warning: #e8992a;
+        --warning-bg: #fdf1df;
+        --danger: #e24c4c;
+        --danger-bg: #fce7e7;
+        --info: #4c7bf7;
+        --info-bg: #eaf0ff;
+        --radius-s: 8px;
+        --radius-m: 14px;
+        --radius-l: 22px;
+        --shadow:
+          0 2px 10px rgba(30, 20, 10, 0.04), 0 1px 2px rgba(30, 20, 10, 0.03);
+        --font:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto,
+          Helvetica, Arial, sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: var(--font);
+        background: var(--bg);
+        color: var(--text);
+        font-size: 14px;
+        -webkit-font-smoothing: antialiased;
+      }
+      .app {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* ===================== SIDEBAR ===================== */
+      .sidebar {
+        width: 230px;
+        background: var(--sidebar);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        padding: 20px 14px;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 8px 22px 8px;
+      }
+      .brand-mark {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-dark)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        flex-shrink: 0;
+      }
+      .brand-name {
+        font-weight: 800;
+        font-size: 15.5px;
+        letter-spacing: -0.2px;
+      }
+      .brand-sub {
+        font-size: 10.5px;
+        color: var(--text-muted);
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+      }
+
+      .nav-section-label {
+        font-size: 10.5px;
+        font-weight: 700;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        padding: 14px 12px 6px;
+      }
+      .nav {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 12px;
+        border-radius: 10px;
+        color: var(--text-muted);
+        font-weight: 600;
+        font-size: 13.5px;
+        cursor: pointer;
+        transition: 0.15s;
+        user-select: none;
+      }
+      .nav-item svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+      }
+      .nav-item:hover {
+        background: #f7f3f0;
+        color: var(--text);
+      }
+      .nav-item.active {
+        background: var(--primary-light);
+        color: var(--primary-dark);
+      }
+      .nav-badge {
+        margin-left: auto;
+        background: var(--danger);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 1px 6px;
+        border-radius: 20px;
+      }
+      .sidebar-bottom {
+        margin-top: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      /* ===================== MAIN / TOPBAR ===================== */
+      .main {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 28px;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface);
+        position: sticky;
+        top: 0;
+        z-index: 5;
+      }
+      .page-title {
+        font-size: 20px;
+        font-weight: 800;
+        letter-spacing: -0.3px;
+      }
+      .page-subtitle {
+        font-size: 12.5px;
+        color: var(--text-muted);
+        font-weight: 500;
+        margin-top: 2px;
+      }
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .icon-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        position: relative;
+        color: var(--text-muted);
+      }
+      .icon-btn svg {
+        width: 17px;
+        height: 17px;
+      }
+      .dot-badge {
+        position: absolute;
+        top: -3px;
+        right: -3px;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--danger);
+        border: 2px solid #fff;
+      }
+      .profile {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        cursor: pointer;
+      }
+      .avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--primary-light);
+        color: var(--primary-dark);
+        font-weight: 700;
+        font-size: 12.5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .profile-name {
+        font-weight: 700;
+        font-size: 13px;
+      }
+      .profile-role {
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+
+      .page-content {
+        padding: 24px 28px;
+        flex: 1;
+      }
+      .page {
+        display: none;
+      }
+      .page.active {
+        display: block;
+      }
+
+      /* ===================== SHARED COMPONENTS ===================== */
+      .toolbar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+      .search-box {
+        flex: 1;
+        min-width: 220px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 9px 12px;
+        color: var(--text-muted);
+      }
+      .search-box svg {
+        width: 15px;
+        height: 15px;
+        flex-shrink: 0;
+      }
+      .search-box input {
+        border: none;
+        outline: none;
+        font-size: 13px;
+        width: 100%;
+        font-family: var(--font);
+        color: var(--text);
+      }
+      .select {
+        border: 1px solid var(--border);
+        background: #fff;
+        border-radius: 10px;
+        padding: 9px 14px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text);
+        cursor: pointer;
+      }
+      .btn {
+        border: none;
+        border-radius: 10px;
+        padding: 10px 16px;
+        font-weight: 700;
+        font-size: 13px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-family: var(--font);
+        transition: 0.15s;
+      }
+      .btn svg {
+        width: 15px;
+        height: 15px;
+      }
+      .btn-primary {
+        background: var(--primary);
+        color: #fff;
+      }
+      .btn-primary:hover {
+        background: var(--primary-dark);
+      }
+      .btn-ghost {
+        background: #fff;
+        border: 1px solid var(--border);
+        color: var(--text);
+      }
+      .btn-ghost:hover {
+        background: #faf8f6;
+      }
+      .btn-sm {
+        padding: 7px 12px;
+        font-size: 12px;
+      }
+      .btn-block {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .badge {
+        font-size: 10.5px;
+        font-weight: 700;
+        padding: 3px 9px;
+        border-radius: 20px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        white-space: nowrap;
+      }
+      .badge-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+      }
+      .badge-new {
+        background: var(--info-bg);
+        color: var(--info);
+      }
+      .badge-accepted {
+        background: var(--warning-bg);
+        color: var(--warning);
+      }
+      .badge-preparing {
+        background: #f1e9fe;
+        color: #8b5cf6;
+      }
+      .badge-completed {
+        background: var(--success-bg);
+        color: var(--success);
+      }
+      .badge-error {
+        background: var(--danger-bg);
+        color: var(--danger);
+      }
+      .badge-lowstock {
+        background: var(--warning-bg);
+        color: var(--warning);
+      }
+      .badge-outstock {
+        background: var(--danger-bg);
+        color: var(--danger);
+      }
+      .badge-instock {
+        background: var(--success-bg);
+        color: var(--success);
+      }
+      .badge-onduty {
+        background: var(--success-bg);
+        color: var(--success);
+      }
+      .badge-offduty {
+        background: #f1f1f1;
+        color: var(--text-muted);
+      }
+      .badge-break {
+        background: var(--warning-bg);
+        color: var(--warning);
+      }
+
+      .grid {
+        display: grid;
+        gap: 16px;
+      }
+      .grid-3 {
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      }
+      .grid-4 {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      }
+
+      .kpi-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-m);
+        padding: 18px;
+        box-shadow: var(--shadow);
+      }
+      .kpi-label {
+        font-size: 12px;
+        color: var(--text-muted);
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .kpi-value {
+        font-size: 25px;
+        font-weight: 800;
+        margin-top: 8px;
+        letter-spacing: -0.5px;
+      }
+      .kpi-change {
+        font-size: 11.5px;
+        font-weight: 700;
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .kpi-up {
+        color: var(--success);
+      }
+      .kpi-down {
+        color: var(--danger);
+      }
+
+      .layout-split {
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: 20px;
+        align-items: start;
+      }
+      @media (max-width: 980px) {
+        .layout-split {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .panel {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-m);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .panel-header {
+        padding: 16px 18px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .panel-title {
+        font-weight: 800;
+        font-size: 14.5px;
+      }
+      .panel-body {
+        padding: 18px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      th {
+        text-align: left;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: var(--text-muted);
+        font-weight: 700;
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--border);
+      }
+      td {
+        padding: 13px 14px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: middle;
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
+      tr:hover td {
+        background: #fcfbfa;
+      }
+
+      .row-flex {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .avatar-sm {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: var(--primary-light);
+        color: var(--primary-dark);
+        font-weight: 700;
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .name-strong {
+        font-weight: 700;
+        font-size: 13px;
+      }
+      .name-sub {
+        font-size: 11.5px;
+        color: var(--text-muted);
+      }
+
+      .notif-banner {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: var(--warning-bg);
+        border: 1px solid #f3d9ac;
+        color: #8a5a0e;
+        border-radius: var(--radius-m);
+        padding: 13px 16px;
+        margin-bottom: 18px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .notif-banner svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        color: var(--warning);
+      }
+      .notif-banner .btn {
+        margin-left: auto;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: var(--text-muted);
+      }
+
+      /* order cards */
+      .order-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-m);
+        padding: 16px;
+        box-shadow: var(--shadow);
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      .order-card:hover {
+        border-color: #e7b7a4;
+      }
+      .order-card.selected {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-light);
+      }
+      .order-card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+      .order-id {
+        font-size: 11px;
+        color: var(--text-muted);
+        font-weight: 600;
+      }
+      .order-customer {
+        font-weight: 800;
+        font-size: 14.5px;
+        margin-top: 2px;
+      }
+      .order-time {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin: 10px 0 8px;
+      }
+      .order-items {
+        font-size: 12.5px;
+        color: var(--text-muted);
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        padding-bottom: 10px;
+        border-bottom: 1px dashed var(--border);
+        margin-bottom: 10px;
+      }
+      .order-items div {
+        display: flex;
+        justify-content: space-between;
+      }
+      .order-items span:first-child {
+        color: var(--text);
+        font-weight: 500;
+      }
+      .order-total-row {
+        display: flex;
+        justify-content: space-between;
+        font-weight: 800;
+        font-size: 14px;
+        margin-bottom: 12px;
+      }
+      .order-actions {
+        display: flex;
+        gap: 8px;
+      }
+      .order-actions .btn {
+        flex: 1;
+      }
+
+      /* details panel */
+      .detail-item {
+        display: flex;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .detail-item:last-child {
+        border-bottom: none;
+      }
+      .detail-thumb {
+        width: 46px;
+        height: 46px;
+        border-radius: 10px;
+        background: var(--primary-light);
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 19px;
+      }
+      .detail-item-info {
+        flex: 1;
+      }
+      .detail-item-name {
+        font-weight: 700;
+        font-size: 13px;
+      }
+      .detail-item-note {
+        font-size: 11.5px;
+        color: var(--text-muted);
+        margin-top: 2px;
+      }
+      .detail-item-price {
+        font-weight: 700;
+        font-size: 13px;
+        white-space: nowrap;
+      }
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        padding: 6px 0;
+        color: var(--text-muted);
+      }
+      .summary-row.total {
+        color: var(--text);
+        font-weight: 800;
+        font-size: 15px;
+        border-top: 1px solid var(--border);
+        margin-top: 6px;
+        padding-top: 12px;
+      }
+
+      /* combo cards */
+      .combo-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-m);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+      }
+      .combo-image {
+        height: 110px;
+        background: linear-gradient(135deg, #ffe4d6, #ffcdb8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 38px;
+      }
+      .combo-body {
+        padding: 15px;
+      }
+      .combo-title-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .combo-name {
+        font-weight: 800;
+        font-size: 14.5px;
+      }
+      .combo-items-list {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin: 8px 0 12px;
+        line-height: 1.6;
+      }
+      .combo-price-row {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+      }
+      .price-now {
+        font-weight: 800;
+        font-size: 17px;
+      }
+      .price-was {
+        font-size: 12.5px;
+        color: var(--text-muted);
+        text-decoration: line-through;
+      }
+      .save-badge {
+        background: var(--success-bg);
+        color: var(--success);
+        font-size: 10.5px;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: 20px;
+        margin-left: auto;
+      }
+      .combo-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 14px;
+        padding-top: 12px;
+        border-top: 1px solid var(--border);
+      }
+
+      .toggle {
+        width: 38px;
+        height: 22px;
+        border-radius: 20px;
+        background: var(--border);
+        position: relative;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+      .toggle.on {
+        background: var(--success);
+      }
+      .toggle-knob {
+        width: 16px;
+        height: 16px;
+        background: #fff;
+        border-radius: 50%;
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        transition: 0.15s;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      }
+      .toggle.on .toggle-knob {
+        left: 19px;
+      }
+
+      .icon-action {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--text-muted);
+      }
+      .icon-action svg {
+        width: 14px;
+        height: 14px;
+      }
+      .icon-action-row {
+        display: flex;
+        gap: 6px;
+      }
+
+      /* schedule mini calendar (employees) */
+      .week-row {
+        display: flex;
+        gap: 5px;
+        margin-top: 8px;
+      }
+      .day-pill {
+        flex: 1;
+        text-align: center;
+        font-size: 10.5px;
+        font-weight: 700;
+        padding: 6px 0;
+        border-radius: 8px;
+        background: #f3f1ee;
+        color: var(--text-muted);
+      }
+      .day-pill.active {
+        background: var(--primary);
+        color: #fff;
+      }
+
+      /* reports charts */
+      .chart-tabs {
+        display: flex;
+        gap: 6px;
+        background: #f3f1ee;
+        padding: 3px;
+        border-radius: 9px;
+      }
+      .chart-tab {
+        padding: 6px 12px;
+        font-size: 12px;
+        font-weight: 700;
+        border-radius: 7px;
+        cursor: pointer;
+        color: var(--text-muted);
+      }
+      .chart-tab.active {
+        background: #fff;
+        color: var(--text);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      }
+
+      .legend {
+        display: flex;
+        gap: 16px;
+        font-size: 12px;
+        color: var(--text-muted);
+        font-weight: 600;
+      }
+      .legend span {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .legend i {
+        width: 9px;
+        height: 9px;
+        border-radius: 3px;
+        display: inline-block;
+      }
+
+      .form-row {
+        margin-bottom: 14px;
+      }
+      .form-label {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text-muted);
+        margin-bottom: 6px;
+        display: block;
+      }
+      .form-input,
+      .form-select {
+        width: 100%;
+        padding: 9px 12px;
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        font-size: 13px;
+        font-family: var(--font);
+        color: var(--text);
+      }
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .report-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .report-row:last-child {
+        border-bottom: none;
+      }
+      .file-ico {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        background: var(--info-bg);
+        color: var(--info);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .file-ico svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .scroll-x {
+        overflow-x: auto;
+      }
+
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #e4e0da;
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <!-- ===================== SIDEBAR ===================== -->
+      <!--First side bar-->
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M3 2v7c0 1.1.9 2 2 2h1v11M6 2v9M10 2v9M14 2c-2 2-2 5-2 7s1 4 3 4 3-2 3-4-1-9-1-9-1 0-3 2z"
+              />
+            </svg>
+          </div>
+          <div>
+            <div class="brand-name">Bistro OS</div>
+            <div class="brand-sub">Waiter Workspace</div>
+          </div>
+        </div>
+
+        <div class="nav-section-label">Manage</div>
+        <div class="nav">
+          <div class="nav-item active" data-page="orders">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M9 2H5a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2V4a2 2 0 00-2-2h-4"
+              />
+              <path d="M9 7h6M9 11h6M9 15h4" />
+            </svg>
+            Orders
+            <span class="nav-badge">4</span>
+          </div>
+          <div class="nav-item" data-page="combos">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="3" width="7" height="7" rx="1.5" />
+              <rect x="14" y="3" width="7" height="7" rx="1.5" />
+              <rect x="3" y="14" width="7" height="7" rx="1.5" />
+              <rect x="14" y="14" width="7" height="7" rx="1.5" />
+            </svg>
+            Combo
+          </div>
+          <div class="nav-item" data-page="employees">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 00-3-3.87" />
+              <path d="M16 3.13a4 4 0 010 7.75" />
+            </svg>
+            Employees
+          </div>
+          <div class="nav-item" data-page="inventory">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M21 8l-9-5-9 5v8l9 5 9-5V8z" />
+              <path d="M3.3 8.3L12 13l8.7-4.7M12 22V13" />
+            </svg>
+            Inventory
+            <span class="nav-badge">3</span>
+          </div>
+          <div class="nav-item" data-page="reports">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M3 3v18h18" />
+              <path d="M7 15l4-6 3 3 5-8" />
+            </svg>
+            Reports
+          </div>
+        </div>
+
+        <div class="sidebar-bottom">
+          <div class="nav-item">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M9.09 9a3 3 0 015.83 1c0 2-3 2-3 5" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+            Help Center
+          </div>
+        </div>
+      </aside>
+
+      <!-- ===================== MAIN ===================== -->
+      <div class="main">
+        <div class="topbar">
+          <div>
+            <div class="page-title" id="pageTitle">Orders</div>
+            <div class="page-subtitle" id="pageSubtitle">
+              Track live orders and manage the floor in real time
+            </div>
+          </div>
+          <div class="topbar-right">
+            <div class="icon-btn">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+                <path d="M13.73 21a2 2 0 01-3.46 0" />
+              </svg>
+              <span class="dot-badge"></span>
+            </div>
+            <div class="profile">
+              <div class="avatar">WB</div>
+              <div>
+                <div class="profile-name">William Brinko</div>
+                <div class="profile-role">
+                  Louvre Op&eacute;ra &middot; Waiter
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-content">
+          <!-- ============================================================ -->
+          <!-- PAGE: ORDERS -->
+          <!-- ============================================================ -->
+          <div class="page active" id="page-orders">
+            <div class="toolbar">
+              <div class="search-box">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <input placeholder="Search by name, order # or table" />
+              </div>
+              <select class="select">
+                <option>All statuses</option>
+                <option>New</option>
+                <option>Accepted</option>
+                <option>Preparing</option>
+                <option>Completed</option>
+                <option>Error / Cancelled</option>
+              </select>
+              <button class="btn btn-primary">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                New Order
+              </button>
+            </div>
+
+            <div class="layout-split">
+              <div class="grid grid-3">
+                <div class="order-card" data-order="1">
+                  <div class="order-card-top">
+                    <div>
+                      <div class="order-id">#OD945632 &middot; Table A4</div>
+                      <div class="order-customer">Ariel Hikmat</div>
+                    </div>
+                    <span class="badge badge-accepted"
+                      ><span
+                        class="badge-dot"
+                        style="background: var(--warning)"
+                      ></span
+                      >Accepted</span
+                    >
+                  </div>
+                  <div class="order-time">
+                    Wed, July 12, 2026 &middot; 06:12 PM
+                  </div>
+                  <div class="order-items">
+                    <div>
+                      <span>Scrambled eggs with toast</span><span>$16.99</span>
+                    </div>
+                    <div>
+                      <span>Smoked Salmon Bagel &times;2</span
+                      ><span>$38.98</span>
+                    </div>
+                    <div><span>Classic Lemonade</span><span>$16.99</span></div>
+                  </div>
+                  <div class="order-total-row">
+                    <span>Total</span><span>$87.34</span>
+                  </div>
+                  <div class="order-actions">
+                    <button class="btn btn-ghost btn-sm">See Details</button>
+                    <button class="btn btn-primary btn-sm">Pay Bill</button>
+                  </div>
+                </div>
+
+                <div class="order-card selected" data-order="2">
+                  <div class="order-card-top">
+                    <div>
+                      <div class="order-id">#OD945252 &middot; Table A3</div>
+                      <div class="order-customer">Ariel Hikmat</div>
+                    </div>
+                    <span class="badge badge-completed"
+                      ><span
+                        class="badge-dot"
+                        style="background: var(--success)"
+                      ></span
+                      >Completed</span
+                    >
+                  </div>
+                  <div class="order-time">
+                    Wed, July 12, 2026 &middot; 06:12 PM
+                  </div>
+                  <div class="order-items">
+                    <div>
+                      <span>Classic Cheeseburger</span><span>$10.99</span>
+                    </div>
+                    <div>
+                      <span>Fish and Chips &times;2</span><span>$10.99</span>
+                    </div>
+                    <div><span>Greek Gyro Plate</span><span>$13.99</span></div>
+                  </div>
+                  <div class="order-total-row">
+                    <span>Total</span><span>$57.87</span>
+                  </div>
+                  <div class="order-actions">
+                    <button class="btn btn-ghost btn-sm">See Details</button>
+                    <button class="btn btn-primary btn-sm">Pay Bill</button>
+                  </div>
+                </div>
+
+                <div class="order-card" data-order="3">
+                  <div class="order-card-top">
+                    <div>
+                      <div class="order-id">#OD96213 &middot; Table B2</div>
+                      <div class="order-customer">Ariel Hikmat</div>
+                    </div>
+                    <span class="badge badge-error"
+                      ><span
+                        class="badge-dot"
+                        style="background: var(--danger)"
+                      ></span
+                      >Error</span
+                    >
+                  </div>
+                  <div class="order-time">
+                    Wed, July 12, 2026 &middot; 06:19 PM
+                  </div>
+                  <div class="order-items">
+                    <div>
+                      <span>Vegetarian Pad Thai</span><span>$16.99</span>
+                    </div>
+                    <div>
+                      <span>Shrimp Tacos &times;2</span><span>$19.49</span>
+                    </div>
+                    <div><span>Belgian Waffles</span><span>$38.98</span></div>
+                  </div>
+                  <div class="order-total-row">
+                    <span>Total</span><span>$86.96</span>
+                  </div>
+                  <div class="order-actions">
+                    <button class="btn btn-ghost btn-sm">See Details</button>
+                    <button class="btn btn-primary btn-sm">Pay Bill</button>
+                  </div>
+                </div>
+
+                <div class="order-card" data-order="4">
+                  <div class="order-card-top">
+                    <div>
+                      <div class="order-id">#OD945632 &middot; Table A4</div>
+                      <div class="order-customer">Paul Rey</div>
+                    </div>
+                    <span class="badge badge-new"
+                      ><span
+                        class="badge-dot"
+                        style="background: var(--info)"
+                      ></span
+                      >New</span
+                    >
+                  </div>
+                  <div class="order-time">
+                    Wed, July 12, 2026 &middot; 06:18 PM
+                  </div>
+                  <div class="order-items">
+                    <div><span>Margherita Pizza</span><span>$16.99</span></div>
+                    <div>
+                      <span>Belgian Waffles &times;2</span><span>$38.98</span>
+                    </div>
+                    <div><span>Virgin Mojito</span><span>$16.99</span></div>
+                  </div>
+                  <div class="order-total-row">
+                    <span>Total</span><span>$97.96</span>
+                  </div>
+                  <div class="order-actions">
+                    <button class="btn btn-ghost btn-sm">See Details</button>
+                    <button class="btn btn-primary btn-sm">Pay Bill</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ORDER DETAILS SIDE PANEL -->
+              <div class="panel">
+                <div class="panel-header">
+                  <div class="panel-title">Order Details</div>
+                  <span class="badge badge-completed">&#9679; Completed</span>
+                </div>
+                <div class="panel-body">
+                  <div
+                    style="
+                      font-size: 12.5px;
+                      color: var(--text-muted);
+                      line-height: 1.7;
+                      margin-bottom: 14px;
+                    "
+                  >
+                    Recipient:
+                    <strong style="color: var(--text)">Ariel Hikmat</strong
+                    ><br />
+                    Wed, July 12 2026 at 06:12 PM<br />
+                    #OD945252 &middot; Table A3
+                  </div>
+                  <div class="detail-item">
+                    <div class="detail-thumb">&#127828;</div>
+                    <div class="detail-item-info">
+                      <div class="detail-item-name">Classic Cheeseburger</div>
+                      <div class="detail-item-note">
+                        Category: Fast food &middot; Note: less onion
+                      </div>
+                    </div>
+                    <div class="detail-item-price">$10.99</div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="detail-thumb">&#127839;</div>
+                    <div class="detail-item-info">
+                      <div class="detail-item-name">Fish and Chips</div>
+                      <div class="detail-item-note">
+                        Category: Fast food &middot; Qty: 2
+                      </div>
+                    </div>
+                    <div class="detail-item-price">$10.99</div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="detail-thumb">&#127817;</div>
+                    <div class="detail-item-info">
+                      <div class="detail-item-name">Greek Gyro Plate</div>
+                      <div class="detail-item-note">
+                        Category: Main &middot; Note: less ice
+                      </div>
+                    </div>
+                    <div class="detail-item-price">$13.99</div>
+                  </div>
+
+                  <div class="summary-row">
+                    <span>Items (3)</span><span>$57.87</span>
+                  </div>
+                  <div class="summary-row">
+                    <span>Tax (10%)</span><span>$5.79</span>
+                  </div>
+                  <div class="summary-row total">
+                    <span>Total</span><span>$63.66</span>
+                  </div>
+
+                  <div style="display: flex; gap: 8px; margin-top: 16px">
+                    <button class="btn btn-primary btn-block">
+                      Print Bill
+                    </button>
+                    <button class="icon-action">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <circle cx="12" cy="5" r="1" />
+                        <circle cx="12" cy="12" r="1" />
+                        <circle cx="12" cy="19" r="1" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============================================================ -->
+          <!-- PAGE: COMBOS -->
+          <!-- ============================================================ -->
+          <div class="page" id="page-combos">
+            <div class="toolbar">
+              <div class="search-box">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <input placeholder="Search combos" />
+              </div>
+              <select class="select">
+                <option>All categories</option>
+                <option>Breakfast</option>
+                <option>Lunch</option>
+                <option>Family</option>
+                <option>Beverage</option>
+              </select>
+              <button class="btn btn-primary">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                New Combo
+              </button>
+            </div>
+
+            <div class="layout-split">
+              <div class="grid grid-3">
+                <div class="combo-card">
+                  <div class="combo-image">&#127828;</div>
+                  <div class="combo-body">
+                    <div class="combo-title-row">
+                      <div><div class="combo-name">Burger Bash Duo</div></div>
+                      <div class="toggle on">
+                        <div class="toggle-knob"></div>
+                      </div>
+                    </div>
+                    <div class="combo-items-list">
+                      Classic Cheeseburger, Fries, Soft Drink
+                    </div>
+                    <div class="combo-price-row">
+                      <span class="price-now">$14.99</span>
+                      <span class="price-was">$19.97</span>
+                      <span class="save-badge">Save 25%</span>
+                    </div>
+                    <div class="combo-footer">
+                      <span class="badge badge-instock"
+                        >Active &middot; Lunch</span
+                      >
+                      <div class="icon-action-row">
+                        <div class="icon-action">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path d="M12 20h9" />
+                            <path
+                              d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z"
+                            />
+                          </svg>
+                        </div>
+                        <div class="icon-action">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <polyline points="3 6 5 6 21 6" />
+                            <path
+                              d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="combo-card">
+                  <div
+                    class="combo-image"
+                    style="
+                      background: linear-gradient(135deg, #fce9c9, #f7d08a);
+                    "
+                  >
+                    &#127859;
+                  </div>
+                  <div class="combo-body">
+                    <div class="combo-title-row">
+                      <div>
+                        <div class="combo-name">Weekend Breakfast Set</div>
+                      </div>
+                      <div class="toggle on">
+                        <div class="toggle-knob"></div>
+                      </div>
+                    </div>
+                    <div class="combo-items-list">
+                      Scrambled Eggs, Toast, Fresh Orange Juice
+                    </div>
+                    <div class="combo-price-row">
+                      <span class="price-now">$12.49</span>
+                      <span class="price-was">$15.98</span>
+                      <span class="save-badge">Save 22%</span>
+                    </div>
+                    <div class="combo-footer">
+                      <span class="badge badge-instock"
+                        >Active &middot; Breakfast</span
+                      >
+                      <div class="icon-action-row">
+                        <div class="icon-action">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path d="M12 20h9" />
+                            <path
+                              d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z"
+                            />
+                          </svg>
+                        </div>
+                        <div class="icon-action">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <polyline points="3 6 5 6 21 6" />
+                            <path
+                              d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="combo-card">
+                  <div
+                    class="combo-image"
+                    style="
+                      background: linear-gradient(135deg, #e2e9ff, #c6d4ff);
+                    "
+                  >
+                    &#127831;
+                  </div>
+                  <div class="combo-body">
+                    <div class="combo-title-row">
+                      <div>
+                        <div class="combo-name">Family Pizza Night</div>
+                      </div>
+                      <div class="toggle"><div class="toggle-knob"></div></div>
+                    </div>
+                    <div class="combo-items-list">
+                      2 Large Pizzas, Garlic Bread, 4 Drinks
+                    </div>
+                    <div class="combo-price-row">
+                      <span class="price-now">$38.00</span>
+                      <span class="price-was">$49.50</span>
+                      <span class="save-badge">Save 23%</span>
+                    </div>
+                    <div class="combo-footer">
+                      <span
+                        class="badge"
+                        style="background: #f1f1f1; color: var(--text-muted)"
+                        >Paused &middot; Family</span
+                      >
+                      <div class="icon-action-row">
+                        <div class="icon-action">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path d="M12 20h9" />
+                            <path
+                              d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z"
+                            />
+                          </svg>
+                        </div>
+                        <div class="icon-action">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <polyline points="3 6 5 6 21 6" />
+                            <path
+                              d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- COMBO BUILDER PANEL -->
+              <div class="panel">
+                <div class="panel-header">
+                  <div class="panel-title">Combo Builder</div>
+                </div>
+                <div class="panel-body">
+                  <div class="form-row">
+                    <label class="form-label">Combo name</label>
+                    <input
+                      class="form-input"
+                      placeholder="e.g. Burger Bash Duo"
+                    />
+                  </div>
+                  <div class="form-row">
+                    <label class="form-label">Included items</label>
+                    <div
+                      style="display: flex; flex-direction: column; gap: 8px"
+                    >
+                      <div
+                        class="row-flex"
+                        style="
+                          justify-content: space-between;
+                          border: 1px solid var(--border);
+                          border-radius: 9px;
+                          padding: 8px 10px;
+                        "
+                      >
+                        <span style="font-weight: 600"
+                          >Classic Cheeseburger</span
+                        ><span style="color: var(--text-muted)">$10.99</span>
+                      </div>
+                      <div
+                        class="row-flex"
+                        style="
+                          justify-content: space-between;
+                          border: 1px solid var(--border);
+                          border-radius: 9px;
+                          padding: 8px 10px;
+                        "
+                      >
+                        <span style="font-weight: 600">Fries</span
+                        ><span style="color: var(--text-muted)">$4.99</span>
+                      </div>
+                      <button class="btn btn-ghost btn-sm">+ Add item</button>
+                    </div>
+                  </div>
+                  <div class="two-col form-row">
+                    <div>
+                      <label class="form-label">Combo price</label
+                      ><input class="form-input" placeholder="$14.99" />
+                    </div>
+                    <div>
+                      <label class="form-label">Discount</label
+                      ><input class="form-input" placeholder="25%" />
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <label class="form-label">Available on</label>
+                    <div class="week-row">
+                      <div class="day-pill active">M</div>
+                      <div class="day-pill active">T</div>
+                      <div class="day-pill active">W</div>
+                      <div class="day-pill active">T</div>
+                      <div class="day-pill active">F</div>
+                      <div class="day-pill">S</div>
+                      <div class="day-pill">S</div>
+                    </div>
+                  </div>
+                  <button class="btn btn-primary btn-block">Save Combo</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============================================================ -->
+          <!-- PAGE: EMPLOYEES -->
+          <!-- ============================================================ -->
+          <div class="page" id="page-employees">
+            <div class="grid grid-4" style="margin-bottom: 20px">
+              <div class="kpi-card">
+                <div class="kpi-label">Total Employees</div>
+                <div class="kpi-value">28</div>
+                <div class="kpi-change kpi-up">+2 this month</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">On Duty Now</div>
+                <div class="kpi-value">14</div>
+                <div
+                  class="kpi-change"
+                  style="color: var(--text-muted); font-weight: 600"
+                >
+                  out of 28 staff
+                </div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">On Leave Today</div>
+                <div class="kpi-value">2</div>
+                <div
+                  class="kpi-change"
+                  style="color: var(--text-muted); font-weight: 600"
+                >
+                  Approved leave
+                </div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Avg. Rating</div>
+                <div class="kpi-value">4.7</div>
+                <div class="kpi-change kpi-up">+0.2 vs last month</div>
+              </div>
+            </div>
+
+            <div class="toolbar">
+              <div class="search-box">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <input placeholder="Search employees" />
+              </div>
+              <select class="select">
+                <option>All roles</option>
+                <option>Waiter</option>
+                <option>Chef</option>
+                <option>Cashier</option>
+                <option>Manager</option>
+              </select>
+              <button class="btn btn-primary">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                Add Employee
+              </button>
+            </div>
+
+            <div class="layout-split">
+              <div class="panel">
+                <div class="scroll-x">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Employee</th>
+                        <th>Role</th>
+                        <th>Shift</th>
+                        <th>Status</th>
+                        <th>Contact</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <div class="row-flex">
+                            <div class="avatar-sm">AH</div>
+                            <div>
+                              <div class="name-strong">Ariel Hikmat</div>
+                              <div class="name-sub">Joined Mar 2024</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td>Waiter</td>
+                        <td>Morning (8am&ndash;4pm)</td>
+                        <td>
+                          <span class="badge badge-onduty"
+                            >&#9679; On Duty</span
+                          >
+                        </td>
+                        <td>ariel.h@bistro.com</td>
+                        <td>
+                          <div class="icon-action">
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                            >
+                              <circle cx="12" cy="5" r="1" />
+                              <circle cx="12" cy="12" r="1" />
+                              <circle cx="12" cy="19" r="1" />
+                            </svg>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="row-flex">
+                            <div class="avatar-sm">PR</div>
+                            <div>
+                              <div class="name-strong">Paul Rey</div>
+                              <div class="name-sub">Joined Jan 2023</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td>Chef</td>
+                        <td>Evening (4pm&ndash;12am)</td>
+                        <td>
+                          <span class="badge badge-break"
+                            >&#9679; On Break</span
+                          >
+                        </td>
+                        <td>paul.rey@bistro.com</td>
+                        <td>
+                          <div class="icon-action">
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                            >
+                              <circle cx="12" cy="5" r="1" />
+                              <circle cx="12" cy="12" r="1" />
+                              <circle cx="12" cy="19" r="1" />
+                            </svg>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="row-flex">
+                            <div class="avatar-sm">MF</div>
+                            <div>
+                              <div class="name-strong">William Brinko</div>
+                              <div class="name-sub">Joined Sep 2022</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td>Manager</td>
+                        <td>Morning (8am&ndash;4pm)</td>
+                        <td>
+                          <span class="badge badge-onduty"
+                            >&#9679; On Duty</span
+                          >
+                        </td>
+                        <td>william.b@bistro.com</td>
+                        <td>
+                          <div class="icon-action">
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                            >
+                              <circle cx="12" cy="5" r="1" />
+                              <circle cx="12" cy="12" r="1" />
+                              <circle cx="12" cy="19" r="1" />
+                            </svg>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="row-flex">
+                            <div class="avatar-sm">SK</div>
+                            <div>
+                              <div class="name-strong">Sara Khan</div>
+                              <div class="name-sub">Joined Jun 2024</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td>Cashier</td>
+                        <td>Night (12am&ndash;8am)</td>
+                        <td>
+                          <span class="badge badge-offduty"
+                            >&#9679; Off Duty</span
+                          >
+                        </td>
+                        <td>sara.k@bistro.com</td>
+                        <td>
+                          <div class="icon-action">
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                            >
+                              <circle cx="12" cy="5" r="1" />
+                              <circle cx="12" cy="12" r="1" />
+                              <circle cx="12" cy="19" r="1" />
+                            </svg>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- EMPLOYEE PROFILE PANEL -->
+              <div class="panel">
+                <div class="panel-header">
+                  <div class="panel-title">Employee Profile</div>
+                  <span class="badge badge-onduty">&#9679; On Duty</span>
+                </div>
+                <div class="panel-body">
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      gap: 12px;
+                      margin-bottom: 16px;
+                    "
+                  >
+                    <div
+                      class="avatar"
+                      style="width: 52px; height: 52px; font-size: 16px"
+                    >
+                      AH
+                    </div>
+                    <div>
+                      <div style="font-weight: 800; font-size: 15px">
+                        Ariel Hikmat
+                      </div>
+                      <div style="font-size: 12px; color: var(--text-muted)">
+                        Waiter &middot; Louvre Op&eacute;ra
+                      </div>
+                    </div>
+                  </div>
+                  <div class="summary-row">
+                    <span>Phone</span
+                    ><span style="color: var(--text); font-weight: 600"
+                      >+1 (415) 555-0132</span
+                    >
+                  </div>
+                  <div class="summary-row">
+                    <span>Email</span
+                    ><span style="color: var(--text); font-weight: 600"
+                      >ariel.h@bistro.com</span
+                    >
+                  </div>
+                  <div class="summary-row">
+                    <span>Hourly rate</span
+                    ><span style="color: var(--text); font-weight: 600"
+                      >$18.50/hr</span
+                    >
+                  </div>
+                  <div class="summary-row">
+                    <span>Orders served (mo.)</span
+                    ><span style="color: var(--text); font-weight: 600"
+                      >312</span
+                    >
+                  </div>
+
+                  <div style="margin-top: 14px">
+                    <label class="form-label">This week's schedule</label>
+                    <div class="week-row">
+                      <div class="day-pill active">M</div>
+                      <div class="day-pill active">T</div>
+                      <div class="day-pill active">W</div>
+                      <div class="day-pill">T</div>
+                      <div class="day-pill active">F</div>
+                      <div class="day-pill active">S</div>
+                      <div class="day-pill">S</div>
+                    </div>
+                  </div>
+
+                  <button
+                    class="btn btn-ghost btn-block"
+                    style="margin-top: 16px"
+                  >
+                    View Full Attendance Log
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============================================================ -->
+          <!-- PAGE: INVENTORY -->
+          <!-- ============================================================ -->
+          <div class="page" id="page-inventory">
+            <div class="notif-banner">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+                />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+              3 items are running low on stock and need reordering
+              <button class="btn btn-ghost btn-sm">View Items</button>
+            </div>
+
+            <div class="grid grid-4" style="margin-bottom: 20px">
+              <div class="kpi-card">
+                <div class="kpi-label">Total Items</div>
+                <div class="kpi-value">186</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Low Stock</div>
+                <div class="kpi-value" style="color: var(--warning)">3</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Out of Stock</div>
+                <div class="kpi-value" style="color: var(--danger)">1</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Inventory Value</div>
+                <div class="kpi-value">$12,480</div>
+              </div>
+            </div>
+
+            <div class="toolbar">
+              <div class="search-box">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <input placeholder="Search inventory items" />
+              </div>
+              <select class="select">
+                <option>All categories</option>
+                <option>Produce</option>
+                <option>Meat &amp; Seafood</option>
+                <option>Dairy</option>
+                <option>Beverages</option>
+                <option>Dry Goods</option>
+              </select>
+              <button class="btn btn-primary">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                Add Item
+              </button>
+            </div>
+
+            <div class="layout-split">
+              <div class="panel">
+                <div class="scroll-x">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Item</th>
+                        <th>Category</th>
+                        <th>Stock</th>
+                        <th>Reorder Level</th>
+                        <th>Supplier</th>
+                        <th>Status</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <div class="name-strong">Chicken Breast</div>
+                          <div class="name-sub">Unit: kg</div>
+                        </td>
+                        <td>Meat &amp; Seafood</td>
+                        <td>4.2 kg</td>
+                        <td>10 kg</td>
+                        <td>Fresh Farms Co.</td>
+                        <td>
+                          <span class="badge badge-lowstock">Low Stock</span>
+                        </td>
+                        <td>
+                          <button class="btn btn-ghost btn-sm">Restock</button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="name-strong">Mozzarella Cheese</div>
+                          <div class="name-sub">Unit: kg</div>
+                        </td>
+                        <td>Dairy</td>
+                        <td>0 kg</td>
+                        <td>5 kg</td>
+                        <td>Dairy Best Ltd.</td>
+                        <td>
+                          <span class="badge badge-outstock">Out of Stock</span>
+                        </td>
+                        <td>
+                          <button class="btn btn-ghost btn-sm">Restock</button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="name-strong">Iceberg Lettuce</div>
+                          <div class="name-sub">Unit: pcs</div>
+                        </td>
+                        <td>Produce</td>
+                        <td>12 pcs</td>
+                        <td>20 pcs</td>
+                        <td>Green Valley Produce</td>
+                        <td>
+                          <span class="badge badge-lowstock">Low Stock</span>
+                        </td>
+                        <td>
+                          <button class="btn btn-ghost btn-sm">Restock</button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="name-strong">Coca-Cola Bottles</div>
+                          <div class="name-sub">Unit: bottles</div>
+                        </td>
+                        <td>Beverages</td>
+                        <td>240 bottles</td>
+                        <td>60 bottles</td>
+                        <td>City Beverage Distributors</td>
+                        <td>
+                          <span class="badge badge-instock">In Stock</span>
+                        </td>
+                        <td>
+                          <button class="btn btn-ghost btn-sm">Restock</button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="name-strong">All-Purpose Flour</div>
+                          <div class="name-sub">Unit: kg</div>
+                        </td>
+                        <td>Dry Goods</td>
+                        <td>38 kg</td>
+                        <td>15 kg</td>
+                        <td>Millers &amp; Co.</td>
+                        <td>
+                          <span class="badge badge-instock">In Stock</span>
+                        </td>
+                        <td>
+                          <button class="btn btn-ghost btn-sm">Restock</button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="name-strong">Basmati Rice</div>
+                          <div class="name-sub">Unit: kg</div>
+                        </td>
+                        <td>Dry Goods</td>
+                        <td>7 kg</td>
+                        <td>15 kg</td>
+                        <td>Millers &amp; Co.</td>
+                        <td>
+                          <span class="badge badge-lowstock">Low Stock</span>
+                        </td>
+                        <td>
+                          <button class="btn btn-ghost btn-sm">Restock</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- ITEM DETAIL PANEL -->
+              <div class="panel">
+                <div class="panel-header">
+                  <div class="panel-title">Item Detail</div>
+                  <span class="badge badge-lowstock">Low Stock</span>
+                </div>
+                <div class="panel-body">
+                  <div style="font-weight: 800; font-size: 15px">
+                    Chicken Breast
+                  </div>
+                  <div
+                    style="
+                      font-size: 12px;
+                      color: var(--text-muted);
+                      margin-bottom: 14px;
+                    "
+                  >
+                    Category: Meat &amp; Seafood &middot; SKU: MS-0231
+                  </div>
+                  <div class="summary-row">
+                    <span>Current stock</span
+                    ><span style="color: var(--text); font-weight: 700"
+                      >4.2 kg</span
+                    >
+                  </div>
+                  <div class="summary-row">
+                    <span>Reorder level</span
+                    ><span style="color: var(--text); font-weight: 600"
+                      >10 kg</span
+                    >
+                  </div>
+                  <div class="summary-row">
+                    <span>Unit cost</span
+                    ><span style="color: var(--text); font-weight: 600"
+                      >$6.20 / kg</span
+                    >
+                  </div>
+                  <div class="summary-row">
+                    <span>Supplier</span
+                    ><span style="color: var(--text); font-weight: 600"
+                      >Fresh Farms Co.</span
+                    >
+                  </div>
+                  <div class="summary-row">
+                    <span>Last restocked</span
+                    ><span style="color: var(--text); font-weight: 600"
+                      >July 15, 2026</span
+                    >
+                  </div>
+
+                  <div class="form-row" style="margin-top: 14px">
+                    <label class="form-label">Quick restock quantity</label>
+                    <input class="form-input" placeholder="e.g. 15 kg" />
+                  </div>
+                  <button class="btn btn-primary btn-block">
+                    Confirm Restock
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============================================================ -->
+          <!-- PAGE: REPORTS -->
+          <!-- ============================================================ -->
+          <div class="page" id="page-reports">
+            <div class="grid grid-4" style="margin-bottom: 20px">
+              <div class="kpi-card">
+                <div class="kpi-label">Total Sales <span>&#128176;</span></div>
+                <div class="kpi-value">$48,920</div>
+                <div class="kpi-change kpi-up">
+                  &#9650; 12.4% vs last period
+                </div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Total Orders <span>&#129380;</span></div>
+                <div class="kpi-value">1,284</div>
+                <div class="kpi-change kpi-up">&#9650; 8.1% vs last period</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Avg. Order Value</div>
+                <div class="kpi-value">$38.10</div>
+                <div class="kpi-change kpi-down">
+                  &#9660; 2.3% vs last period
+                </div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Top Selling Item</div>
+                <div class="kpi-value" style="font-size: 18px">
+                  Classic Cheeseburger
+                </div>
+                <div
+                  class="kpi-change"
+                  style="color: var(--text-muted); font-weight: 600"
+                >
+                  412 sold this period
+                </div>
+              </div>
+            </div>
+
+            <div class="layout-split">
+              <div style="display: flex; flex-direction: column; gap: 20px">
+                <!-- SALES TREND -->
+                <div class="panel">
+                  <div class="panel-header">
+                    <div class="panel-title">Sales Trend</div>
+                    <div class="chart-tabs">
+                      <div class="chart-tab">Week</div>
+                      <div class="chart-tab active">Month</div>
+                      <div class="chart-tab">Year</div>
+                    </div>
+                  </div>
+                  <div class="panel-body">
+                    <svg viewBox="0 0 560 200" width="100%" height="200">
+                      <line
+                        x1="0"
+                        y1="10"
+                        x2="560"
+                        y2="10"
+                        stroke="#F0EDE9"
+                        stroke-width="1"
+                      />
+                      <line
+                        x1="0"
+                        y1="55"
+                        x2="560"
+                        y2="55"
+                        stroke="#F0EDE9"
+                        stroke-width="1"
+                      />
+                      <line
+                        x1="0"
+                        y1="100"
+                        x2="560"
+                        y2="100"
+                        stroke="#F0EDE9"
+                        stroke-width="1"
+                      />
+                      <line
+                        x1="0"
+                        y1="145"
+                        x2="560"
+                        y2="145"
+                        stroke="#F0EDE9"
+                        stroke-width="1"
+                      />
+                      <line
+                        x1="0"
+                        y1="190"
+                        x2="560"
+                        y2="190"
+                        stroke="#F0EDE9"
+                        stroke-width="1"
+                      />
+                      <path
+                        d="M0,150 L70,120 L140,135 L210,90 L280,100 L350,60 L420,75 L490,40 L560,55"
+                        fill="none"
+                        stroke="#FF6F47"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                      <path
+                        d="M0,150 L70,120 L140,135 L210,90 L280,100 L350,60 L420,75 L490,40 L560,55 L560,190 L0,190 Z"
+                        fill="#FF6F47"
+                        opacity="0.08"
+                      />
+                      <path
+                        d="M0,175 L70,165 L140,170 L210,150 L280,155 L350,130 L420,140 L490,110 L560,120"
+                        fill="none"
+                        stroke="#4C7BF7"
+                        stroke-width="2.5"
+                        stroke-dasharray="5 4"
+                        stroke-linecap="round"
+                      />
+                      <circle cx="490" cy="40" r="4" fill="#FF6F47" />
+                    </svg>
+                    <div
+                      style="
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 11px;
+                        color: var(--text-muted);
+                        margin-top: 2px;
+                      "
+                    >
+                      <span>Jul 1</span><span>Jul 7</span><span>Jul 14</span
+                      ><span>Jul 21</span><span>Jul 28</span>
+                    </div>
+                    <div class="legend" style="margin-top: 14px">
+                      <span><i style="background: #ff6f47"></i>This month</span>
+                      <span><i style="background: #4c7bf7"></i>Last month</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- TOP ITEMS BAR CHART -->
+                <div class="panel">
+                  <div class="panel-header">
+                    <div class="panel-title">Top Selling Items</div>
+                  </div>
+                  <div class="panel-body">
+                    <svg viewBox="0 0 560 190" width="100%" height="190">
+                      <line
+                        x1="0"
+                        y1="170"
+                        x2="560"
+                        y2="170"
+                        stroke="#ECE9E4"
+                        stroke-width="1"
+                      />
+                      <rect
+                        x="20"
+                        y="30"
+                        width="46"
+                        height="140"
+                        rx="8"
+                        fill="#FF6F47"
+                      />
+                      <rect
+                        x="110"
+                        y="55"
+                        width="46"
+                        height="115"
+                        rx="8"
+                        fill="#FFA98A"
+                      />
+                      <rect
+                        x="200"
+                        y="70"
+                        width="46"
+                        height="100"
+                        rx="8"
+                        fill="#FFA98A"
+                      />
+                      <rect
+                        x="290"
+                        y="90"
+                        width="46"
+                        height="80"
+                        rx="8"
+                        fill="#FFCDB8"
+                      />
+                      <rect
+                        x="380"
+                        y="105"
+                        width="46"
+                        height="65"
+                        rx="8"
+                        fill="#FFCDB8"
+                      />
+                      <rect
+                        x="470"
+                        y="120"
+                        width="46"
+                        height="50"
+                        rx="8"
+                        fill="#FFE4D6"
+                      />
+                    </svg>
+                    <div
+                      style="
+                        display: flex;
+                        font-size: 11px;
+                        color: var(--text-muted);
+                        text-align: center;
+                      "
+                    >
+                      <span style="width: 16.6%">Cheese&shy;burger</span>
+                      <span style="width: 16.6%">Fish &amp; Chips</span>
+                      <span style="width: 16.6%">Gyro Plate</span>
+                      <span style="width: 16.6%">Pad Thai</span>
+                      <span style="width: 16.6%">Waffles</span>
+                      <span style="width: 16.6%">Mojito</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- GENERATE REPORT + RECENT REPORTS -->
+              <div style="display: flex; flex-direction: column; gap: 20px">
+                <div class="panel">
+                  <div class="panel-header">
+                    <div class="panel-title">Generate Report</div>
+                  </div>
+                  <div class="panel-body">
+                    <div class="form-row">
+                      <label class="form-label">Report type</label>
+                      <select class="form-select">
+                        <option>Sales Summary</option>
+                        <option>Inventory Usage</option>
+                        <option>Employee Performance</option>
+                        <option>Combo Performance</option>
+                      </select>
+                    </div>
+                    <div class="two-col form-row">
+                      <div>
+                        <label class="form-label">From</label
+                        ><input class="form-input" placeholder="Jul 1, 2026" />
+                      </div>
+                      <div>
+                        <label class="form-label">To</label
+                        ><input class="form-input" placeholder="Jul 21, 2026" />
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <label class="form-label">Export format</label>
+                      <select class="form-select">
+                        <option>PDF</option>
+                        <option>Excel (.xlsx)</option>
+                        <option>CSV</option>
+                      </select>
+                    </div>
+                    <button class="btn btn-primary btn-block">
+                      Generate Report
+                    </button>
+                  </div>
+                </div>
+
+                <div class="panel">
+                  <div class="panel-header">
+                    <div class="panel-title">Recent Reports</div>
+                  </div>
+                  <div class="panel-body">
+                    <div class="report-row">
+                      <div class="file-ico">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                          />
+                          <polyline points="14 2 14 8 20 8" />
+                        </svg>
+                      </div>
+                      <div style="flex: 1">
+                        <div class="name-strong">
+                          Sales Summary &mdash; June 2026
+                        </div>
+                        <div class="name-sub">
+                          Generated Jul 1, 2026 &middot; PDF
+                        </div>
+                      </div>
+                      <div class="icon-action">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                          <polyline points="7 10 12 15 17 10" />
+                          <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div class="report-row">
+                      <div class="file-ico">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                          />
+                          <polyline points="14 2 14 8 20 8" />
+                        </svg>
+                      </div>
+                      <div style="flex: 1">
+                        <div class="name-strong">
+                          Inventory Usage &mdash; Q2
+                        </div>
+                        <div class="name-sub">
+                          Generated Jun 30, 2026 &middot; Excel
+                        </div>
+                      </div>
+                      <div class="icon-action">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                          <polyline points="7 10 12 15 17 10" />
+                          <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div class="report-row">
+                      <div class="file-ico">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                          />
+                          <polyline points="14 2 14 8 20 8" />
+                        </svg>
+                      </div>
+                      <div style="flex: 1">
+                        <div class="name-strong">
+                          Employee Performance &mdash; May
+                        </div>
+                        <div class="name-sub">
+                          Generated Jun 1, 2026 &middot; PDF
+                        </div>
+                      </div>
+                      <div class="icon-action">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                          <polyline points="7 10 12 15 17 10" />
+                          <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const titles = {
+        orders: [
+          "Orders",
+          "Track live orders and manage the floor in real time",
+        ],
+        combos: ["Combo", "Bundle menu items into discounted combo deals"],
+        employees: ["Employees", "Manage staff, shifts, and performance"],
+        inventory: [
+          "Inventory",
+          "Monitor stock levels and reorder before you run out",
+        ],
+        reports: [
+          "Reports",
+          "Sales trends, top items, and exportable business reports",
+        ],
+      };
+
+      document.querySelectorAll(".nav-item[data-page]").forEach((item) => {
+        item.addEventListener("click", () => {
+          document
+            .querySelectorAll(".nav-item[data-page]")
+            .forEach((i) => i.classList.remove("active"));
+          item.classList.add("active");
+          const key = item.dataset.page;
+          document
+            .querySelectorAll(".page")
+            .forEach((p) => p.classList.remove("active"));
+          document.getElementById("page-" + key).classList.add("active");
+          document.getElementById("pageTitle").textContent = titles[key][0];
+          document.getElementById("pageSubtitle").textContent = titles[key][1];
+        });
+      });
+
+      document.querySelectorAll(".order-card").forEach((card) => {
+        card.addEventListener("click", () => {
+          document
+            .querySelectorAll(".order-card")
+            .forEach((c) => c.classList.remove("selected"));
+          card.classList.add("selected");
+        });
+      });
+
+      document.querySelectorAll(".toggle").forEach((t) => {
+        t.addEventListener("click", () => t.classList.toggle("on"));
+      });
+
+      document.querySelectorAll(".chart-tab").forEach((t) => {
+        t.addEventListener("click", () => {
+          t.parentElement
+            .querySelectorAll(".chart-tab")
+            .forEach((x) => x.classList.remove("active"));
+          t.classList.add("active");
+        });
+      });
+    </script>
+  </body>
+</html>
